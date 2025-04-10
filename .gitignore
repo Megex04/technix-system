@@ -1,0 +1,31 @@
+HELP.md
+!.mvn/wrapper/maven-wrapper.jar
+!**/src/main/**/target/
+!**/src/test/**/target/
+
+### STS ###
+.apt_generated
+.classpath
+.factorypath
+.project
+.settings
+.springBeans
+.sts4-cache
+
+# Ignorar configuraciones del IDE
+.idea/
+*.iml
+
+# Maven
+.mvn/
+target/
+!src/main/resources/
+
+# Archivos no deseados
+.gitattributes
+mvnw
+mvnw.cmd
+
+# Archivos del sistema
+.DS_Store
+Thumbs.db
