@@ -134,8 +134,10 @@ public class AuthServiceImpl implements AuthService {
     }
 
     @Override
-    public void logout(String userId) {
-        User user = userRepository.findById(userId)
+    public void logout(String jwtFromUser) {
+        String userEmail = tokenProvider.getUserIdFromJWT(jwtFromUser);
+
+        User user = userRepository.findByEmail(userEmail)
                 .orElseThrow(() -> new RuntimeException("Usuario no encontrado"));
 
         // Limpiar todos los tokens de refresco
