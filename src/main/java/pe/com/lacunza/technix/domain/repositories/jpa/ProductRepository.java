@@ -9,9 +9,10 @@ import java.util.List;
 
 @Repository
 public interface ProductRepository extends JpaRepository<Product, Long> {
+    List<Product> findByNameContainingIgnoreCaseOrDescriptionContainingIgnoreCase(String name, String description);
     List<Product> findByNameContainingIgnoreCase(String name);
     List<Product> findByCategoryId(Long categoryId);
-    boolean existsByCode(String code);
+    List<Product> findByName(String categoryName);
 
     @Query("SELECT p FROM Product p WHERE p.stockQuantity <= " +
             "(SELECT ac.minimumStock FROM AlertConfiguration ac WHERE ac.product = p)")

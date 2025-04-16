@@ -1,0 +1,71 @@
+package pe.com.lacunza.technix.api.controllers;
+
+import jakarta.validation.Valid;
+import lombok.AllArgsConstructor;
+import org.springframework.http.HttpStatus;
+import org.springframework.http.ResponseEntity;
+import org.springframework.web.bind.annotation.*;
+import pe.com.lacunza.technix.api.models.response.ProductLowStockRes;
+import pe.com.lacunza.technix.api.models.response.ProductResponse;
+import pe.com.lacunza.technix.dtos.product.ProductDto;
+import pe.com.lacunza.technix.services.ProductService;
+import pe.com.lacunza.technix.util.ResourceNotFoundException;
+
+import java.util.List;
+
+@RestController
+@RequestMapping("/api/products")
+@AllArgsConstructor
+public class ProductController {
+
+    private final ProductService productService;
+
+    @GetMapping
+    public ResponseEntity<List<ProductResponse>> getAllProducts() {
+        List<ProductResponse> products = productService.findAllProducts();
+        return ResponseEntity.ok(products);
+    }
+
+    @GetMapping("/{id}")
+    public ResponseEntity<ProductResponse> getProductById(@PathVariable Long id) {
+        ProductResponse product = productService.findProductById(id)
+                .orElseThrow(() -> new ResourceNotFoundException("Product not found with id: " + id));
+        return ResponseEntity.ok(product);
+    }
+
+    @PostMapping
+    public ResponseEntity<ProductResponse> createProduct(@Valid @RequestBody ProductDto product) {
+        ProductResponse savedProduct = productService.saveProduct(product);
+        return new ResponseEntity<>(savedProduct, HttpStatus.CREATED);
+    }
+
+    @PutMapping("/{id}")
+    public ResponseEntity<ProductResponse> updateProduct(@PathVariable Long id, @Valid @RequestBody ProductDto productDetails) {
+        ProductResponse updatedProduct = productService.updateProduct(id, productDetails);
+        return ResponseEntity.ok(updatedProduct);
+    }
+
+    @DeleteMapping("/{id}")
+    public ResponseEntity<Void> deleteProduct(@PathVariable Long id) {
+        productService.deleteProduct(id);
+        return ResponseEntity.noContent().build();
+    }
+
+    @GetMapping("/search")
+    public ResponseEntity<List<ProductResponse>> searchProducts(@RequestParam String query) {
+        List<ProductResponse> products = productService.searchProducts(query);
+        return ResponseEntity.ok(products);
+    }
+
+    @GetMapping("/category/{categoryName}")
+    public ResponseEntity<List<ProductResponse>> getProductsByCategory(@PathVariable String categoryName) {
+        List<ProductResponse> products = productService.findProductsByCategory(categoryName);
+        return ResponseEntity.ok(products);
+    }
+
+    @GetMapping("/low-stock")
+    public ResponseEntity<List<ProductLowStockRes>> getLowStockProducts() {
+        List<ProductLowStockRes> products = productService.findLowStockProducts();
+        return ResponseEntity.ok(products);
+    }
+}
