@@ -25,9 +25,6 @@ public class Category {
     private String description;
 
     @ManyToOne(fetch = FetchType.LAZY)
-    @JoinColumn(name = "parent_category_id")
-    private Category parentCategory;
-
-    @OneToMany(mappedBy = "parentCategory")
-    private List<Category> subCategories;
+    @JoinColumn(name = "product_id", nullable = false)
+    private Product product;
 }

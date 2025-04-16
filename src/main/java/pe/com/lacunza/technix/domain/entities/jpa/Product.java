@@ -27,9 +27,6 @@ public class Product {
     @Column(length = 1000)
     private String description;
 
-    @Column(unique = true, nullable = false)
-    private String code;
-
     @Column(nullable = false, precision = 10, scale = 2)
     private BigDecimal price;
 
@@ -50,5 +47,4 @@ public class Product {
     @Column(name = "updated_at")
     private LocalDateTime updatedAt;
 
-    // Constructores, getters y setters
 }
