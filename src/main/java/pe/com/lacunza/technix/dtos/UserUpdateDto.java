@@ -20,7 +20,6 @@ public class UserUpdateDto {
     @Email(message = "Email should be valid")
     private String email;
 
-    @NotNull
     private String password;
 
     private String firstName;

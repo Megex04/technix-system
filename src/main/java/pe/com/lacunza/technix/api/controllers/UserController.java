@@ -99,12 +99,7 @@ public class UserController {
 
     @PostMapping("/password-reset")
     public ResponseEntity<?> changePassword(@Valid @RequestBody PasswordResetDto passwordResetDto) {
-        try {
-            userService.changePassword(passwordResetDto.getEmail(), passwordResetDto.getCurrentPassword(), passwordResetDto.getNewPassword());
-            return ResponseEntity.ok("Your password has reset successfully");
-        } catch (Exception e) {
-            // For security reasons, always return a success message even if the email doesn't exist
-            return ResponseEntity.ok("If your email is registered, check right your credentials to change it");
-        }
+        userService.changePassword(passwordResetDto.getEmail(), passwordResetDto.getCurrentPassword(), passwordResetDto.getNewPassword());
+        return ResponseEntity.ok("Your password has reset successfully");
     }
 }
