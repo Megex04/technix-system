@@ -38,8 +38,10 @@ public class UserServiceImpl implements UserService {
         user.setFirstName(registrationDto.getFirstName());
         user.setLastName(registrationDto.getLastName());
         if(registrationDto.getRole() != null && registrationDto.getRole().equals("ADMIN")) {
+            user.setRole("ADMIN");
             user.setPermissions(InventaryConstants.newPermissionsAdmin);
         } else if(registrationDto.getRole() != null && registrationDto.getRole().equals("SUPERVISOR")) {
+            user.setRole("SUPERVISOR");
             user.setPermissions(InventaryConstants.newPermissionsSupervisor);
         } else {
             user.setRole(registrationDto.getRole());
