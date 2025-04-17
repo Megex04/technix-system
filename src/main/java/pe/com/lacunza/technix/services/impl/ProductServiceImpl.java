@@ -32,7 +32,7 @@ public class ProductServiceImpl implements ProductService {
     private final SupplierRepository supplierRepository;
 
     // @Value("${product.lowstock.threshold:10}")
-    private int lowStockThreshold = 10;
+    //private int lowStockThreshold = 10;
 
     @Override
     public List<ProductResponse> findAllProducts() {
