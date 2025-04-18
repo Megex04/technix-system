@@ -18,6 +18,7 @@ import pe.com.lacunza.technix.api.exception.ResourceNotFoundException;
 
 import java.time.LocalDateTime;
 import java.util.List;
+import java.util.Objects;
 import java.util.Optional;
 import java.util.stream.Collectors;
 
@@ -72,7 +73,9 @@ public class ProductServiceImpl implements ProductService {
                 .orElseThrow(() -> new ResourceNotFoundException("Product not found with id: " + id));
 
         product.setName(productDetails.getName());
-        product.setDescription(productDetails.getDescription());
+        if(Objects.nonNull(productDetails.getDescription())) {
+            product.setDescription(productDetails.getDescription());
+        }
         product.setPrice(productDetails.getPrice());
         product.setStockQuantity(productDetails.getStockQuantity());
 

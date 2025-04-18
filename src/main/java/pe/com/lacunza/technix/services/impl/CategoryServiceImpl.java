@@ -12,6 +12,7 @@ import pe.com.lacunza.technix.services.CategoryService;
 import pe.com.lacunza.technix.api.exception.ResourceNotFoundException;
 
 import java.util.List;
+import java.util.Objects;
 import java.util.Optional;
 
 @Transactional
@@ -47,8 +48,12 @@ public class CategoryServiceImpl implements CategoryService {
         Category category = categoryRepository.findById(id)
                 .orElseThrow(() -> new ResourceNotFoundException("Category not found with id: " + id));
 
-        category.setName(categoryDetails.getName());
-        category.setDescription(categoryDetails.getDescription());
+        if(Objects.nonNull(categoryDetails.getName())) {
+            category.setName(categoryDetails.getName());
+        }
+        if(Objects.nonNull(categoryDetails.getDescription())) {
+            category.setDescription(categoryDetails.getDescription());
+        }
 
         return categoryRepository.save(category);
     }
