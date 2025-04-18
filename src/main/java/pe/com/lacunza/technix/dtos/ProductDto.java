@@ -1,4 +1,4 @@
-package pe.com.lacunza.technix.dtos.product;
+package pe.com.lacunza.technix.dtos;
 
 import jakarta.validation.constraints.NotBlank;
 import jakarta.validation.constraints.Size;

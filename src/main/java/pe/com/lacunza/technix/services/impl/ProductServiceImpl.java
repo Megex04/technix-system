@@ -12,9 +12,9 @@ import pe.com.lacunza.technix.domain.entities.jpa.Supplier;
 import pe.com.lacunza.technix.domain.repositories.jpa.CategoryRepository;
 import pe.com.lacunza.technix.domain.repositories.jpa.ProductRepository;
 import pe.com.lacunza.technix.domain.repositories.jpa.SupplierRepository;
-import pe.com.lacunza.technix.dtos.product.ProductDto;
+import pe.com.lacunza.technix.dtos.ProductDto;
 import pe.com.lacunza.technix.services.ProductService;
-import pe.com.lacunza.technix.util.ResourceNotFoundException;
+import pe.com.lacunza.technix.api.exception.ResourceNotFoundException;
 
 import java.time.LocalDateTime;
 import java.util.List;

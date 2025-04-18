@@ -3,8 +3,7 @@ package pe.com.lacunza.technix.services;
 import org.springframework.transaction.annotation.Transactional;
 import pe.com.lacunza.technix.api.models.response.ProductLowStockRes;
 import pe.com.lacunza.technix.api.models.response.ProductResponse;
-import pe.com.lacunza.technix.domain.entities.jpa.Product;
-import pe.com.lacunza.technix.dtos.product.ProductDto;
+import pe.com.lacunza.technix.dtos.ProductDto;
 
 import java.util.List;
 import java.util.Optional;
