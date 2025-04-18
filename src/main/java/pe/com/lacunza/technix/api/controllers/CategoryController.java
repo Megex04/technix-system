@@ -8,7 +8,7 @@ import org.springframework.web.bind.annotation.*;
 import pe.com.lacunza.technix.api.models.response.CategoryResponse;
 import pe.com.lacunza.technix.domain.entities.jpa.Category;
 import pe.com.lacunza.technix.services.CategoryService;
-import pe.com.lacunza.technix.util.ResourceNotFoundException;
+import pe.com.lacunza.technix.api.exception.ResourceNotFoundException;
 
 import java.util.List;
 

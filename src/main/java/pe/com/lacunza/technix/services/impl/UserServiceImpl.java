@@ -12,7 +12,7 @@ import pe.com.lacunza.technix.dtos.UserRegistrationDto;
 import pe.com.lacunza.technix.dtos.UserUpdateDto;
 import pe.com.lacunza.technix.services.UserService;
 import pe.com.lacunza.technix.util.InventaryConstants;
-import pe.com.lacunza.technix.util.ResourceNotFoundException;
+import pe.com.lacunza.technix.api.exception.ResourceNotFoundException;
 
 import java.time.LocalDate;
 import java.util.List;

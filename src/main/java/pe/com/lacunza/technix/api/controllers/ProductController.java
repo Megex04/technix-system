@@ -7,9 +7,9 @@ import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 import pe.com.lacunza.technix.api.models.response.ProductLowStockRes;
 import pe.com.lacunza.technix.api.models.response.ProductResponse;
-import pe.com.lacunza.technix.dtos.product.ProductDto;
+import pe.com.lacunza.technix.dtos.ProductDto;
 import pe.com.lacunza.technix.services.ProductService;
-import pe.com.lacunza.technix.util.ResourceNotFoundException;
+import pe.com.lacunza.technix.api.exception.ResourceNotFoundException;
 
 import java.util.List;
 

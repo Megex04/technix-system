@@ -9,7 +9,7 @@ import pe.com.lacunza.technix.api.models.response.CategoryResponse;
 import pe.com.lacunza.technix.domain.entities.jpa.Category;
 import pe.com.lacunza.technix.domain.repositories.jpa.CategoryRepository;
 import pe.com.lacunza.technix.services.CategoryService;
-import pe.com.lacunza.technix.util.ResourceNotFoundException;
+import pe.com.lacunza.technix.api.exception.ResourceNotFoundException;
 
 import java.util.List;
 import java.util.Optional;
