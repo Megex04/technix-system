@@ -11,7 +11,7 @@ import java.util.Optional;
 public interface ProductService {
     List<ProductResponse> findAllProducts();
 
-    Optional<ProductResponse> findProductById(Long id);
+    ProductResponse findProductById(Long id);
 
     @Transactional
     ProductResponse saveProduct(ProductDto product);
@@ -27,4 +27,6 @@ public interface ProductService {
     List<ProductResponse> findProductsByCategory(String categoryName);
 
     List<ProductLowStockRes> findLowStockProducts();
+
+    Boolean findLowStockProductById(Long id);
 }

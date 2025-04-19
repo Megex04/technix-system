@@ -6,6 +6,8 @@ import lombok.Builder;
 import lombok.Data;
 import lombok.NoArgsConstructor;
 
+import java.util.List;
+
 @NoArgsConstructor
 @AllArgsConstructor
 @Data
@@ -17,7 +19,7 @@ public class AlertConfiguration {
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id;
 
-    @OneToOne
+    @OneToOne(fetch = FetchType.LAZY)
     @JoinColumn(name = "product_id", unique = true)
     private Product product;
 
@@ -25,5 +27,5 @@ public class AlertConfiguration {
     private Integer minimumStock;
 
     @Column(name = "notify_emails")
-    private String notifyEmails;
+    private List<String> notifyEmails;
 }

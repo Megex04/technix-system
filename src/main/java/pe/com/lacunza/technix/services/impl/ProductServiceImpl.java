@@ -9,6 +9,7 @@ import pe.com.lacunza.technix.api.models.response.ProductResponse;
 import pe.com.lacunza.technix.domain.entities.jpa.Category;
 import pe.com.lacunza.technix.domain.entities.jpa.Product;
 import pe.com.lacunza.technix.domain.entities.jpa.Supplier;
+import pe.com.lacunza.technix.domain.repositories.jpa.AlertConfigurationRepository;
 import pe.com.lacunza.technix.domain.repositories.jpa.CategoryRepository;
 import pe.com.lacunza.technix.domain.repositories.jpa.ProductRepository;
 import pe.com.lacunza.technix.domain.repositories.jpa.SupplierRepository;
@@ -31,6 +32,7 @@ public class ProductServiceImpl implements ProductService {
     private final ProductRepository productRepository;
     private final CategoryRepository categoryRepository;
     private final SupplierRepository supplierRepository;
+    private final AlertConfigurationRepository alertConfigurationRepository;
 
     // @Value("${product.lowstock.threshold:10}")
     //private int lowStockThreshold = 10;
@@ -43,18 +45,18 @@ public class ProductServiceImpl implements ProductService {
     }
 
     @Override
-    public Optional<ProductResponse> findProductById(Long id) {
+    public ProductResponse findProductById(Long id) {
         return productRepository.findById(id)
-                .map(ProductServiceImpl::toProductResponse);
+                .map(ProductServiceImpl::toProductResponse)
+                .orElseThrow(() -> new ResourceNotFoundException("Product not found with id: " + id));
     }
 
-    @Transactional
     @Override
     public ProductResponse saveProduct(ProductDto product) {
         Category categoryToAdd = categoryRepository.findById(Long.valueOf(product.getCategoryId()))
                 .orElseThrow(() -> new ResourceNotFoundException("Category not found with id: " + product.getCategoryId()));
 
-        Supplier supplierToAdd = supplierRepository.findById(Long.valueOf(product.getCategoryId()))
+        Supplier supplierToAdd = supplierRepository.findById(Long.valueOf(product.getSupplierId()))
                 .orElseThrow(() -> new ResourceNotFoundException("Supplier not found with id: " + product.getSupplierId()));
 
         Product productToSave = fromDtotoProduct(product);
@@ -124,6 +126,18 @@ public class ProductServiceImpl implements ProductService {
                 .toList();
     }
 
+    @Override
+    public Boolean findLowStockProductById(Long id) {
+        Optional<Product> productOptional = productRepository.findById(id);
+        if(productOptional.isPresent()) {
+            alertConfigurationRepository.findByProductId(id)
+                            .orElseThrow(() -> new ResourceNotFoundException("Alert configuration not found for product with id: " + id));
+            return productRepository.isStockLow(id);
+        } else {
+            throw new ResourceNotFoundException("Product not found with id: " + id);
+        }
+    }
+
     public static ProductResponse toProductResponse(Product product) {
         return ProductResponse.builder()
                 .id (product.getId())
@@ -133,6 +147,8 @@ public class ProductServiceImpl implements ProductService {
                 .stockQuantity(product.getStockQuantity())
                 .categoryName(product.getCategory().getName())
                 .supplierName(product.getSupplier().getName())
+                .createdAt(product.getCreatedAt())
+                .updatedAt(product.getUpdatedAt())
                 .build();
     }
     public static Product fromDtotoProduct(ProductDto productDto) {
