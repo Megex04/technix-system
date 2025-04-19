@@ -5,6 +5,7 @@ import lombok.AllArgsConstructor;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
+import pe.com.lacunza.technix.api.models.response.LowStockResponse;
 import pe.com.lacunza.technix.api.models.response.ProductLowStockRes;
 import pe.com.lacunza.technix.api.models.response.ProductResponse;
 import pe.com.lacunza.technix.dtos.ProductDto;
@@ -28,8 +29,7 @@ public class ProductController {
 
     @GetMapping("/{id}")
     public ResponseEntity<ProductResponse> getProductById(@PathVariable Long id) {
-        ProductResponse product = productService.findProductById(id)
-                .orElseThrow(() -> new ResourceNotFoundException("Product not found with id: " + id));
+        ProductResponse product = productService.findProductById(id);
         return ResponseEntity.ok(product);
     }
 
@@ -50,7 +50,7 @@ public class ProductController {
         productService.deleteProduct(id);
         return ResponseEntity.noContent().build();
     }
-
+    // probar de aqui para abajo estos endpoints (desde /search para abajo)
     @GetMapping("/search")
     public ResponseEntity<List<ProductResponse>> searchProducts(@RequestParam String query) {
         List<ProductResponse> products = productService.searchProducts(query);
@@ -63,9 +63,21 @@ public class ProductController {
         return ResponseEntity.ok(products);
     }
 
-    @GetMapping("/low-stock")
+    @GetMapping("/all-low-stock")
     public ResponseEntity<List<ProductLowStockRes>> getLowStockProducts() {
         List<ProductLowStockRes> products = productService.findLowStockProducts();
         return ResponseEntity.ok(products);
+    }
+
+    @GetMapping("/{id}/stock")
+    public ResponseEntity<LowStockResponse> getLowStockProductById(@PathVariable Long id) {
+        Boolean lowStock = productService.findLowStockProductById(id);
+        LowStockResponse validarStock;
+        if(Boolean.TRUE.equals(lowStock)) {
+            validarStock = new LowStockResponse(true, "El producto con id: "+ id +" tiene bajo stock (alerta!!)");
+        } else {
+            validarStock = new LowStockResponse(false, "El producto con id: "+ id +" tiene stock suficiente");
+        }
+        return new ResponseEntity<>(validarStock, HttpStatus.OK);
     }
 }

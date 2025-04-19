@@ -34,6 +34,15 @@ public class TechnixExceptionHandler {
         return new ResponseEntity<>(errorDetails, HttpStatus.NOT_FOUND);
     }
 
+    @ExceptionHandler(IllegalStateAlertException.class)
+    public ResponseEntity<ErrorDetails> handleIllegalStateException(IllegalStateAlertException ex) {
+        ErrorDetails errorDetails = new ErrorDetails(
+                formattedLocalDateTimeNow(LocalDateTime.now()),
+                ex.getMessage(),
+                HttpStatus.CONFLICT.value());
+        return new ResponseEntity<>(errorDetails, HttpStatus.CONFLICT);
+    }
+
     @ExceptionHandler(MethodArgumentNotValidException.class)
     public ResponseEntity<Object> handleMethodArgumentNotValid(MethodArgumentNotValidException ex) {
         Map<String, String> errors = new HashMap<>();
