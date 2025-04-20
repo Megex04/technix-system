@@ -16,6 +16,7 @@ import pe.com.lacunza.technix.domain.repositories.jpa.SupplierRepository;
 import pe.com.lacunza.technix.dtos.ProductDto;
 import pe.com.lacunza.technix.services.ProductService;
 import pe.com.lacunza.technix.api.exception.ResourceNotFoundException;
+import pe.com.lacunza.technix.util.EmailHelper;
 
 import java.time.LocalDateTime;
 import java.util.List;
@@ -33,6 +34,8 @@ public class ProductServiceImpl implements ProductService {
     private final CategoryRepository categoryRepository;
     private final SupplierRepository supplierRepository;
     private final AlertConfigurationRepository alertConfigurationRepository;
+
+    private final EmailHelper emailHelper;
 
     // @Value("${product.lowstock.threshold:10}")
     //private int lowStockThreshold = 10;
@@ -114,16 +117,21 @@ public class ProductServiceImpl implements ProductService {
 
     @Override
     public List<ProductResponse> findProductsByCategory(String categoryName) {
-        return productRepository.findByNameContainingIgnoreCase(categoryName).stream()
+        return productRepository.findByCategoryName(categoryName).stream()
                 .map(ProductServiceImpl::toProductResponse)
                 .toList();
     }
 
     @Override
     public List<ProductLowStockRes> findLowStockProducts() {
-        return productRepository.findLowStockProducts().stream()
+        List<ProductLowStockRes> lowStockResList = productRepository.findLowStockProducts().stream()
                 .map(ProductServiceImpl::toProductLowStock)
                 .toList();
+
+        lowStockResList.forEach(productLow -> {
+            emailHelper.sendMail(productLow.getCategoryName(), productLow.getName(), productLow.getStockQuantity());
+        });
+        return lowStockResList;
     }
 
     @Override
@@ -132,6 +140,8 @@ public class ProductServiceImpl implements ProductService {
         if(productOptional.isPresent()) {
             alertConfigurationRepository.findByProductId(id)
                             .orElseThrow(() -> new ResourceNotFoundException("Alert configuration not found for product with id: " + id));
+            // hACER aqui envio de correos
+            emailHelper.sendMail(productOptional.get().getCategory().getName(), productOptional.get().getName(), productOptional.get().getStockQuantity());
             return productRepository.isStockLow(id);
         } else {
             throw new ResourceNotFoundException("Product not found with id: " + id);
