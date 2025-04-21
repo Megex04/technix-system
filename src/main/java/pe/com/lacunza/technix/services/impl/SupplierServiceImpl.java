@@ -25,7 +25,7 @@ public class SupplierServiceImpl implements SupplierService {
     @Override
     public List<SupplierDto> getAllSuppliers() {
         return supplierRepository.findAll().stream()
-                .map(this::convertToDTO)
+                .map(SupplierServiceImpl::convertToDTO)
                 .collect(Collectors.toList());
     }
 
@@ -76,7 +76,7 @@ public class SupplierServiceImpl implements SupplierService {
         supplierRepository.delete(supplier);
     }
 
-    private SupplierDto convertToDTO(Supplier supplier) {
+    public static SupplierDto convertToDTO(Supplier supplier) {
         return SupplierDto.builder()
                 .id(supplier.getId())
                 .name(supplier.getName())
