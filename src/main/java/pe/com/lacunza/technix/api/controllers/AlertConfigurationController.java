@@ -4,6 +4,7 @@ import jakarta.validation.Valid;
 import lombok.AllArgsConstructor;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
+import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.web.bind.annotation.*;
 import pe.com.lacunza.technix.dtos.AlertConfigurationDto;
 import pe.com.lacunza.technix.services.AlertConfigurationService;
@@ -30,18 +31,21 @@ public class AlertConfigurationController {
     }
 
     @PostMapping
+    @PreAuthorize("hasRole('ADMIN') or hasRole('SUPERVISOR')")
     public ResponseEntity<AlertConfigurationDto> createAlertConfiguration(@Valid @RequestBody AlertConfigurationDto alertConfigurationDTO) {
         AlertConfigurationDto createdAlertConfiguration = alertConfigurationService.createAlertConfiguration(alertConfigurationDTO);
         return new ResponseEntity<>(createdAlertConfiguration, HttpStatus.CREATED);
     }
 
     @PutMapping("/{id}")
+    @PreAuthorize("hasRole('ADMIN') or hasRole('SUPERVISOR')")
     public ResponseEntity<AlertConfigurationDto> updateAlertConfiguration(@PathVariable Long id, @Valid @RequestBody AlertConfigurationDto alertConfigurationDTO) {
         AlertConfigurationDto updatedAlertConfiguration = alertConfigurationService.updateAlertConfiguration(id, alertConfigurationDTO);
         return new ResponseEntity<>(updatedAlertConfiguration, HttpStatus.OK);
     }
 
     @DeleteMapping("/{id}")
+    @PreAuthorize("hasRole('ADMIN') or hasRole('SUPERVISOR')")
     public ResponseEntity<Void> deleteAlertConfiguration(@PathVariable Long id) {
         alertConfigurationService.deleteAlertConfiguration(id);
         return new ResponseEntity<>(HttpStatus.NO_CONTENT);

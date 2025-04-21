@@ -29,11 +29,11 @@ public class UserController {
         return ResponseEntity.ok(users);
     }
 
-    @GetMapping("/{username}")
-    @PreAuthorize("hasRole('ADMIN') or @userSecurity.isCurrentUser(#id)")
-    public ResponseEntity<?> getUserById(@PathVariable String username) {
+    @GetMapping("/here")
+    @PreAuthorize("hasRole('ADMIN') or @userSecurity.isCurrentUsername(#email)")
+    public ResponseEntity<?> getUserById(@RequestParam String email) {
         try {
-            User user = userService.getUserByUsername(username);
+            User user = userService.getUserByEmail(email);
             return ResponseEntity.ok(user);
         } catch (Exception e) {
             return ResponseEntity.status(HttpStatus.NOT_FOUND).body("User not found: " + e.getMessage());

@@ -12,7 +12,7 @@ public interface UserService {
 
     List<User> getAllUsers();
 
-    User getUserByUsername(String username);
+    User getUserByEmail(String username);
 
     User updateUser(String id, UserUpdateDto userUpdateDto);
 

@@ -78,20 +78,8 @@ public class JwtTokenProvider {
         return claims.getSubject();
     }
 
-    public boolean validateToken(String authToken) {
-        try {
-            Jwts.parserBuilder().setSigningKey(getSigningKey()).build().parseClaimsJws(authToken);
-            return true;
-        } catch (MalformedJwtException ex) {
-            log.error("Token JWT inválido");
-        } catch (ExpiredJwtException ex) {
-            log.error("Token JWT expirado");
-        } catch (UnsupportedJwtException ex) {
-            log.error("Token JWT no soportado");
-        } catch (IllegalArgumentException ex) {
-            log.error("La cadena claims del JWT está vacía");
-        }
-        return false;
+    public void validateToken(String authToken) {
+        Jwts.parserBuilder().setSigningKey(getSigningKey()).build().parseClaimsJws(authToken);
     }
 
     private SecretKey getSigningKey() {
