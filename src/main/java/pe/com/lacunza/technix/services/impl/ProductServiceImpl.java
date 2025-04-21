@@ -140,9 +140,13 @@ public class ProductServiceImpl implements ProductService {
         if(productOptional.isPresent()) {
             alertConfigurationRepository.findByProductId(id)
                             .orElseThrow(() -> new ResourceNotFoundException("Alert configuration not found for product with id: " + id));
-            // hACER aqui envio de correos
-            emailHelper.sendMail(productOptional.get().getCategory().getName(), productOptional.get().getName(), productOptional.get().getStockQuantity());
-            return productRepository.isStockLow(id);
+            Boolean isStockLowProduct = productRepository.isStockLow(id);
+
+            if(Boolean.TRUE.equals(isStockLowProduct)) {
+                // hACER aqui envio de correos
+                emailHelper.sendMail(productOptional.get().getCategory().getName(), productOptional.get().getName(), productOptional.get().getStockQuantity());
+            }
+            return isStockLowProduct;
         } else {
             throw new ResourceNotFoundException("Product not found with id: " + id);
         }
@@ -167,6 +171,16 @@ public class ProductServiceImpl implements ProductService {
                 .description(productDto.getDescription())
                 .price(productDto.getPrice())
                 .stockQuantity(productDto.getStockQuantity())
+                .build();
+    }
+    public static ProductDto fromModelToProductDto(Product product) {
+        return ProductDto.builder()
+                .name(product.getName())
+                .description(product.getDescription())
+                .price(product.getPrice())
+                .stockQuantity(product.getStockQuantity())
+                .categoryId(Math.toIntExact(product.getCategory().getId()))
+                .supplierId(Math.toIntExact(product.getSupplier().getId()))
                 .build();
     }
     public static ProductLowStockRes toProductLowStock(Product product) {
