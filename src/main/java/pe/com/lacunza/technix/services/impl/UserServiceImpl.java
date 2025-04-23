@@ -12,7 +12,7 @@ import pe.com.lacunza.technix.dtos.UserRegistrationDto;
 import pe.com.lacunza.technix.dtos.UserUpdateDto;
 import pe.com.lacunza.technix.services.UserService;
 import pe.com.lacunza.technix.util.InventaryConstants;
-import pe.com.lacunza.technix.util.ResourceNotFoundException;
+import pe.com.lacunza.technix.api.exception.ResourceNotFoundException;
 
 import java.time.LocalDate;
 import java.util.List;
@@ -38,8 +38,10 @@ public class UserServiceImpl implements UserService {
         user.setFirstName(registrationDto.getFirstName());
         user.setLastName(registrationDto.getLastName());
         if(registrationDto.getRole() != null && registrationDto.getRole().equals("ADMIN")) {
+            user.setRole("ADMIN");
             user.setPermissions(InventaryConstants.newPermissionsAdmin);
         } else if(registrationDto.getRole() != null && registrationDto.getRole().equals("SUPERVISOR")) {
+            user.setRole("SUPERVISOR");
             user.setPermissions(InventaryConstants.newPermissionsSupervisor);
         } else {
             user.setRole(registrationDto.getRole());
@@ -60,9 +62,9 @@ public class UserServiceImpl implements UserService {
     }
 
     @Override
-    public User getUserByUsername(String username) {
-        return userRepository.findByUsername(username)
-                .orElseThrow(() -> new ResourceNotFoundException("Usuario no encontrado con username: " + username));
+    public User getUserByEmail(String email) {
+        return userRepository.findByEmail(email)
+                .orElseThrow(() -> new ResourceNotFoundException("Usuario no encontrado con email: " + email));
     }
 
     @Override
@@ -174,9 +176,5 @@ public class UserServiceImpl implements UserService {
     public User getUserById(String id) {
         return userRepository.findById(id)
                 .orElseThrow(() -> new ResourceNotFoundException("Usuario no encontrado con id: " + id));
-    }
-    public User getUserByEmail(String email) {
-        return userRepository.findByEmail(email)
-                .orElseThrow(() -> new ResourceNotFoundException("Usuario no encontrado con id: " + email));
     }
 }

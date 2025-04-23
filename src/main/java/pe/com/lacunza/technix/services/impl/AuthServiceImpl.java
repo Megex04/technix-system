@@ -1,5 +1,8 @@
 package pe.com.lacunza.technix.services.impl;
 
+import io.jsonwebtoken.ExpiredJwtException;
+import io.jsonwebtoken.MalformedJwtException;
+import io.jsonwebtoken.UnsupportedJwtException;
 import lombok.AllArgsConstructor;
 import org.springframework.security.authentication.AuthenticationManager;
 import org.springframework.security.authentication.BadCredentialsException;
@@ -94,8 +97,12 @@ public class AuthServiceImpl implements AuthService {
 
     @Override
     public AuthResponse refreshToken(String refreshToken) {
-        // Validar el token de refresco
-        if (!tokenProvider.validateToken(refreshToken)) {
+        // El token lanza excepciones si no es válido
+        try {
+            tokenProvider.validateToken(refreshToken);
+        } catch (ExpiredJwtException ex) {
+            throw new RuntimeException("El token de refresco ha expirado");
+        } catch (MalformedJwtException | UnsupportedJwtException | IllegalArgumentException ex) {
             throw new RuntimeException("Token de refresco inválido");
         }
 
@@ -134,8 +141,10 @@ public class AuthServiceImpl implements AuthService {
     }
 
     @Override
-    public void logout(String userId) {
-        User user = userRepository.findById(userId)
+    public void logout(String jwtFromUser) {
+        String userEmail = tokenProvider.getUserIdFromJWT(jwtFromUser);
+
+        User user = userRepository.findByEmail(userEmail)
                 .orElseThrow(() -> new RuntimeException("Usuario no encontrado"));
 
         // Limpiar todos los tokens de refresco

@@ -1,11 +1,10 @@
 package pe.com.lacunza.technix.domain.entities.jpa;
 
+import com.fasterxml.jackson.annotation.JsonIgnore;
 import jakarta.persistence.*;
-import lombok.AllArgsConstructor;
-import lombok.Builder;
-import lombok.Data;
-import lombok.NoArgsConstructor;
+import lombok.*;
 
+import java.util.ArrayList;
 import java.util.List;
 
 @NoArgsConstructor
@@ -27,6 +26,8 @@ public class Supplier {
     private String email;
     private String address;
 
-    @OneToMany(mappedBy = "supplier")
-    private List<Product> products;
+    @ToString.Exclude
+    @OneToMany(mappedBy = "supplier", cascade = CascadeType.ALL)
+    @JsonIgnore
+    private List<Product> products = new ArrayList<>();
 }

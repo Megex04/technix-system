@@ -1,5 +1,7 @@
 package pe.com.lacunza.technix.config.jwt;
 
+import io.jsonwebtoken.ExpiredJwtException;
+import io.jsonwebtoken.MalformedJwtException;
 import jakarta.servlet.FilterChain;
 import jakarta.servlet.ServletException;
 import jakarta.servlet.http.HttpServletRequest;
@@ -29,7 +31,9 @@ public class JwtAuthenticationFilter extends OncePerRequestFilter {
         try {
             String jwt = getJwtFromRequest(request);
 
-            if (StringUtils.hasText(jwt) && tokenProvider.validateToken(jwt)) {
+            if (StringUtils.hasText(jwt)) {
+                tokenProvider.validateToken(jwt);
+
                 String userEmail = tokenProvider.getUserIdFromJWT(jwt);
 
                 UserDetails userDetails = customUserDetailsService.loadUserByUsername(userEmail);
@@ -39,8 +43,15 @@ public class JwtAuthenticationFilter extends OncePerRequestFilter {
 
                 SecurityContextHolder.getContext().setAuthentication(authentication);
             }
+        } catch (ExpiredJwtException ex) {
+            request.setAttribute("authException", "Token expirado");
+        } catch (MalformedJwtException ex) {
+            request.setAttribute("authException", "Token inválido");
+        } catch (IllegalArgumentException ex) {
+            request.setAttribute("authException", "Token vacío o mal formado");
         } catch (Exception ex) {
             logger.error("No se pudo establecer la autenticación del usuario en el contexto de seguridad", ex);
+            request.setAttribute("authException", "Fallo de autenticación JWT");
         }
 
         filterChain.doFilter(request, response);

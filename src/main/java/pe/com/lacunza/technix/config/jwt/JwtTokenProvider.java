@@ -3,6 +3,7 @@ package pe.com.lacunza.technix.config.jwt;
 import io.jsonwebtoken.*;
 import io.jsonwebtoken.security.Keys;
 import lombok.extern.slf4j.Slf4j;
+import org.apache.commons.codec.digest.DigestUtils;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.security.core.Authentication;
 import org.springframework.stereotype.Component;
@@ -77,24 +78,16 @@ public class JwtTokenProvider {
         return claims.getSubject();
     }
 
-    public boolean validateToken(String authToken) {
-        try {
-            Jwts.parserBuilder().setSigningKey(getSigningKey()).build().parseClaimsJws(authToken);
-            return true;
-        } catch (MalformedJwtException ex) {
-            log.error("Token JWT inválido");
-        } catch (ExpiredJwtException ex) {
-            log.error("Token JWT expirado");
-        } catch (UnsupportedJwtException ex) {
-            log.error("Token JWT no soportado");
-        } catch (IllegalArgumentException ex) {
-            log.error("La cadena claims del JWT está vacía");
-        }
-        return false;
+    public void validateToken(String authToken) {
+        Jwts.parserBuilder().setSigningKey(getSigningKey()).build().parseClaimsJws(authToken);
     }
 
     private SecretKey getSigningKey() {
-        byte[] keyBytes = jwtSecret.getBytes(StandardCharsets.UTF_8);
-        return Keys.hmacShaKeyFor(keyBytes);
+        if (jwtSecret != null && !jwtSecret.isEmpty()) {
+            byte[] keyBytes = DigestUtils.sha256(jwtSecret.getBytes(StandardCharsets.UTF_8));
+            return Keys.hmacShaKeyFor(keyBytes);
+        } else {
+            return Keys.secretKeyFor(SignatureAlgorithm.HS256);
+        }
     }
 }
