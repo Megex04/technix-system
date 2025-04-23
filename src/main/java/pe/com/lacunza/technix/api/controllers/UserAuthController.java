@@ -1,5 +1,9 @@
 package pe.com.lacunza.technix.api.controllers;
 
+import io.swagger.v3.oas.annotations.Operation;
+import io.swagger.v3.oas.annotations.responses.ApiResponse;
+import io.swagger.v3.oas.annotations.security.SecurityRequirement;
+import io.swagger.v3.oas.annotations.tags.Tag;
 import jakarta.validation.Valid;
 import lombok.AllArgsConstructor;
 import org.springframework.http.HttpStatus;
@@ -9,6 +13,7 @@ import pe.com.lacunza.technix.api.models.request.AuthRequest;
 import pe.com.lacunza.technix.api.models.request.RefreshTokenRequest;
 import pe.com.lacunza.technix.api.models.response.AuthResponse;
 import pe.com.lacunza.technix.domain.entities.documents.User;
+import pe.com.lacunza.technix.dtos.PasswordResetDto;
 import pe.com.lacunza.technix.dtos.UserRegistrationDto;
 import pe.com.lacunza.technix.services.AuthService;
 import pe.com.lacunza.technix.services.UserService;
@@ -16,11 +21,17 @@ import pe.com.lacunza.technix.services.UserService;
 @RestController
 @RequestMapping("/api/auth")
 @AllArgsConstructor
+@Tag(name = "Public authentication user endpoints")
 public class UserAuthController {
     private final AuthService authService;
     private final UserService userService;
 
     @PostMapping("/register")
+    @Operation(summary = "Register user in system")
+    @ApiResponse(
+            responseCode = "400",
+            description = "When the request and his field contains a invalid data to register new user"
+    )
     public ResponseEntity<?> registerUser(@Valid @RequestBody UserRegistrationDto registrationDto) {
         try {
             User createdUser = userService.registerUser(registrationDto);
@@ -31,6 +42,11 @@ public class UserAuthController {
     }
 
     @PostMapping("/login")
+    @Operation(summary = "Log in user in system with credentials")
+    @ApiResponse(
+            responseCode = "400",
+            description = "When the request and his field contains a invalid data to login user"
+    )
     public ResponseEntity<?> authenticateUser(@Valid @RequestBody AuthRequest authRequest) {
         try {
             AuthResponse authResponse = authService.authenticate(authRequest.getUsername(), authRequest.getPassword());
@@ -41,6 +57,11 @@ public class UserAuthController {
     }
 
     @PostMapping("/refresh-token")
+    @Operation(summary = "Ingresated refreshToken to update its token")
+    @ApiResponse(
+            responseCode = "400",
+            description = "When the request and his field contains a invalid data to refresh new token"
+    )
     public ResponseEntity<?> refreshToken(@Valid @RequestBody RefreshTokenRequest refreshTokenRequest) {
         try {
             AuthResponse authResponse = authService.refreshToken(refreshTokenRequest.getRefreshToken());
@@ -50,7 +71,19 @@ public class UserAuthController {
         }
     }
 
+    @PostMapping("/password-reset")
+    @Operation(summary = "Change a user password")
+    @ApiResponse(
+            responseCode = "400",
+            description = "When the request and his field contains a invalid data to change password"
+    )
+    public ResponseEntity<?> changePassword(@Valid @RequestBody PasswordResetDto passwordResetDto) {
+        userService.changePassword(passwordResetDto.getEmail(), passwordResetDto.getCurrentPassword(), passwordResetDto.getNewPassword());
+        return ResponseEntity.ok("Your password has reset successfully");
+    }
+
     @PostMapping("/logout")
+    @Operation(summary = "Log out user from system", security = @SecurityRequirement(name = "bearerAuth"))
     public ResponseEntity<?> logoutUser(@RequestHeader("Authorization") String token) {
         try {
             // Extract JWT token from the Authorization header

@@ -72,7 +72,7 @@ public class TechnixExceptionHandler {
         return new ResponseEntity<>(errorDetails, HttpStatus.INTERNAL_SERVER_ERROR);
     }
 
-    public String formattedLocalDateTimeNow(LocalDateTime localDateTimeNow) {
+    public static String formattedLocalDateTimeNow(LocalDateTime localDateTimeNow) {
         DateTimeFormatter formatter = DateTimeFormatter.ofPattern("yyyy-MM-dd HH:mm:ss");
         return localDateTimeNow.format(formatter);
     }
