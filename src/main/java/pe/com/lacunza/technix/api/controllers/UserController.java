@@ -1,5 +1,9 @@
 package pe.com.lacunza.technix.api.controllers;
 
+import io.swagger.v3.oas.annotations.Operation;
+import io.swagger.v3.oas.annotations.responses.ApiResponse;
+import io.swagger.v3.oas.annotations.security.SecurityRequirement;
+import io.swagger.v3.oas.annotations.tags.Tag;
 import jakarta.validation.Valid;
 import lombok.AllArgsConstructor;
 import org.springframework.http.HttpStatus;
@@ -18,12 +22,15 @@ import java.util.List;
 @RestController
 @RequestMapping("/api/users")
 @AllArgsConstructor
+@Tag(name = "User management endpoints controller")
+@SecurityRequirement(name = "bearerAuth")
 public class UserController {
 
     private final UserService userService;
 
     @GetMapping
     @PreAuthorize("hasRole('ADMIN')")
+    @Operation(summary = "Obtains all list users")
     public ResponseEntity<List<User>> getAllUsers() {
         List<User> users = userService.getAllUsers();
         return ResponseEntity.ok(users);
@@ -31,6 +38,7 @@ public class UserController {
 
     @GetMapping("/here")
     @PreAuthorize("hasRole('ADMIN') or @userSecurity.isCurrentUsername(#email)")
+    @Operation(summary = "Obtain a user by email / get your user in same session user")
     public ResponseEntity<?> getUserById(@RequestParam String email) {
         try {
             User user = userService.getUserByEmail(email);
@@ -42,6 +50,7 @@ public class UserController {
 
     @PutMapping("/{id}")
     @PreAuthorize("hasRole('ADMIN') or @userSecurity.isCurrentUser(#id)")
+    @Operation(summary = "Update user by new data / update your user in same session user")
     public ResponseEntity<?> updateUser(@PathVariable String id, @Valid @RequestBody UserUpdateDto userUpdateDto) {
         try {
             User updatedUser = userService.updateUser(id, userUpdateDto);
@@ -53,6 +62,7 @@ public class UserController {
 
     @PatchMapping("/{id}/role")
     @PreAuthorize("hasRole('ADMIN')")
+    @Operation(summary = "Change role from user id")
     public ResponseEntity<?> updateUserRole(@PathVariable String id, @Valid @RequestBody RoleUpdateDto roleUpdateDto) {
         try {
             User updatedUser = userService.updateUserRole(id, roleUpdateDto.getRole());
@@ -64,6 +74,7 @@ public class UserController {
 
     @PatchMapping("/{id}/permissions")
     @PreAuthorize("hasRole('ADMIN')")
+    @Operation(summary = "Update permissions from user id")
     public ResponseEntity<?> updateUserPermissions(
             @PathVariable String id,
             @Valid @RequestBody PermissionsUpdateDto permissionsUpdateDto) {
@@ -81,6 +92,7 @@ public class UserController {
 
     @DeleteMapping("/{id}")
     @PreAuthorize("hasRole('ADMIN')")
+    @Operation(summary = "Delete user by id")
     public ResponseEntity<?> deleteUser(@PathVariable String id) {
         try {
             userService.deleteUser(id);
@@ -92,14 +104,9 @@ public class UserController {
 
     @GetMapping("/active")
     @PreAuthorize("hasRole('ADMIN')")
+    @Operation(summary = "List all active users")
     public ResponseEntity<List<User>> getActiveUsers() {
         List<User> activeUsers = userService.getActiveUsers();
         return ResponseEntity.ok(activeUsers);
-    }
-
-    @PostMapping("/password-reset")
-    public ResponseEntity<?> changePassword(@Valid @RequestBody PasswordResetDto passwordResetDto) {
-        userService.changePassword(passwordResetDto.getEmail(), passwordResetDto.getCurrentPassword(), passwordResetDto.getNewPassword());
-        return ResponseEntity.ok("Your password has reset successfully");
     }
 }
