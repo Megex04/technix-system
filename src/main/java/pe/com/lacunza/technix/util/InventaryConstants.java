@@ -1,8 +1,13 @@
 package pe.com.lacunza.technix.util;
 
+import java.time.format.DateTimeFormatter;
 import java.util.List;
 
 public class InventaryConstants {
+
+    public static final String headerXlsx = "application/vnd.openxmlformats-officedocument.spreadsheetml.sheet";
+    public static final DateTimeFormatter DATE_FORMATTER = DateTimeFormatter.ofPattern("dd/MM/yyyy HH:mm:ss");
+
     public static final List<String> newPermissionsAdmin = List.of(
             "ALL_PERMISSIONS"
     );
