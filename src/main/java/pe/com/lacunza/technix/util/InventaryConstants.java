@@ -23,8 +23,6 @@ public class InventaryConstants {
             "INVENTORY_ADJUST",
             "PRODUCT_CREATE",
             "REPORT_INVENTORY",
-            "REPORT_SALES",
-            "REPORT_PURCHASE",
             "USER_READ",
             "ALERT_READ",
             "ALERT_CREATE",
@@ -41,7 +39,6 @@ public class InventaryConstants {
             "INVENTORY_READ",
             "INVENTORY_IN",
             "INVENTORY_OUT",
-            "REPORT_INVENTORY",
             "ALERT_READ"
     );
 }
