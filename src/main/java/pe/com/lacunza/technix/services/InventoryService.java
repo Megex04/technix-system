@@ -11,12 +11,9 @@ import pe.com.lacunza.technix.util.SortType;
 public interface InventoryService {
     Page<InventoryMovementDto> getAllMovements(Integer page, Integer size, SortType sortType, String fieldSorted);
 
-    @Transactional
     InventoryMovementDto registerStockIn(String jwtUser, StockInRequest request);
 
-    @Transactional
     InventoryMovementDto registerStockOut(String jwtUser, StockOutRequest request);
 
-    @Transactional
     InventoryMovementDto adjustInventory(String jwtUser, StockAdjustRequest request);
 }
